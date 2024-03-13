@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/deck.css">
+    <script defer type="module" src="/scripts/decks.js"></script>
+    <title>Тестета</title>
+</head>
+<body>
+    <div class="blur-mask">
+
+    <%- include('templates/navbar') %>
+
+    <div id="deck-box">
+        <div id="button-div">
+            <button id="add-deck" type="submit" class="add-button">Добави тесте</button>
+            <button id="add-card" type="submit" class="add-button">Добави карта</button>
+        </div>
+        <hr class="big-divider">
+            <% if(messages.error) { %>
+                    <span style="color: rgb(209, 0, 0)"> <%= messages.error %> </span>
+            <% } %>
+
+
+        <div id="card-deck-div">
+            <div id="decks">
+
+
+                <h2>ТВОИТЕ ТЕСТЕТА (<%= decks.length %>)</h2>
+                <% if(typeof decks != 'undefined' && decks.length > 0 ) { %>  <% decks.forEach(deck => { %>
+                    <div class="card-row">
+                        <div class="deck-cards" style="flex-grow: 1">
+                            <div class="mini-game-card black"></div>
+                            <div class="mini-game-card white"></div>
+                            <span><%= deck.name %></span>
+                        </div>
+
+
+
+                        <form action="/decks/remove-deck/<%= deck.id %>" method="POST">
+                            <button>
+                                <img id="trash" src="/svg/trash.svg" width="20px">
+                            </button>
+                        </form>
+                    </div>
+                    <% })}else if(decks.length == 0){ %>
+                        <h3>Нямаш тестета</h3>
+                    <% } %>
+
+
+                    <% if(typeof bookmarkedDecks != 'undefined' && bookmarkedDecks.length > 0 ) { %>  
+                    <h2>ТВОИТЕ ЗАПАЗЕНИ ТЕСЕТА (<%= bookmarkedDecks.length %>) </h2>    
+                    <% bookmarkedDecks.forEach(deck => { %>
+                    <div class="card-row">
+                        <div class="deck-cards" style="flex-grow: 1">
+                            <div class="mini-game-card black"></div>
+                            <div class="mini-game-card white"></div>
+                            <span><%= deck.name %></span>
+                        </div>
+
+
+                        <form action="/decks/remove-bookmark-deck/<%= deck.id %>" method="POST">
+                            <button>
+                                <img id="remove-bookmark" src="/svg/bookmark-solid.svg" width="20px">
+                            </button>
+                        </form>
+                    </div>
+                    <% })} %>
+
+
+            </div>
+
+
+
+
+            <div id="cards">
+                <h2>ТВОИТЕ КАРТИ (<%= cards.length %>)</h2>
+                <div id="cards-list">
+                    <% if(typeof cards != 'undefined' && cards.length > 0 ) { %>  <% cards.forEach(card => { %>
+                        <div class="card-row">
+                            <div style="display: flex; flex-direction: row; flex-grow: 1">
+                                <% if( card.black ) { %>
+                                    <div class="mini-game-card black"></div>
+                                <% }else{ %>
+                                    <div class="mini-game-card"></div>
+                                <% } %>
+
+                                <span><%= card.text %></span>
+                        </div>
+                            <form action="/decks/remove-card/<%= card.id %>" method="POST">
+                                <button>
+                                    <img id="trash" src="/svg/trash.svg" width="20px">
+                                </button>
+                            </form>
+                        </div>
+                    <% })}else if(cards.length == 0){ %>
+                        <h3>Нямаш карти</h3>
+                    <% } %>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    </div>
+
+    <div id="deck-wrapper" class="wrapper" style="display: none">
+        <div id="popup-deck" class="popup cool-box">
+            <div>
+                <button id="close-deck" class="close">X</button>
+            </div>
+
+
+            <form action="/decks/add-deck" method="POST">
+            <div id="deck-cards-rows">
+                <% if(typeof cards != 'undefined' && cards.length > 0 ) { %>  <% cards.forEach(card => { %>
+                    <div class="card-row">
+                        <div style="display: flex; flex-direction: row; flex-grow: 1">
+                            <% if( card.black ) { %>
+                                <div class="mini-game-card black"></div>
+                            <% }else{ %>
+                                <div class="mini-game-card"></div>
+                            <% } %>
+
+                            <span><%= card.text %></span>
+                    </div>
+                        <input type="checkbox" name="checkbox" class="checkbox-cards" value="<%= card.id %>">
+                    </div>
+                <% })}else if(cards.length == 0){ %>
+                    <h3>Нямаш карти</h3>
+                <% } %>
+            </div>
+
+                <input  maxlength="30" style="margin: 5%;"placeholder="Име на тесте" type="text" name="name" required>
+                <button type="submit" class="add-button" >Добави тесте</button>
+            </form>
+        </div>  
+    </div>
+
+
+
+
+
+    <div id="card-wrapper" class="wrapper" style="display: none">
+        <div id="popup-card" class="popup cool-box">
+            <div style="order: 0">
+                <button id="close-card" class="close">X</button>
+            </div>
+            <form action="/decks/add-card" method="POST">                
+
+            <div>
+                <input name="black" type="checkbox" id="black" value="off">
+                <label for="black">Черна</label>
+            </div>
+            <div class="game-card white">
+                <textarea required maxlength="100" name="text" type="text" id="card-input"></textarea>
+            </div>
+            <div>
+                <button type="submit" class="add-button" >Добави карта</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+#title-box{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    top: 8vh;
+    width: 40vw;
+    font-family: 'NeverMindDisplay';
+    padding: 2%;
+    background-color: rgb(194, 194, 194);
+    border: 10px rgb(146, 146, 146) outset;
+}
+
+#title-box h1{
+    font-size: 2em;
+}
+
+#title-box button{
+    position: relative;
+    right: -17%;
+}
+
+.menu-button{
+    display: flex;
+    font-size: 120%;
+    width: 60%;
+}
+
+.menu-button:hover{
+    font-size: 160%;
+}
+

@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary" style="border-bottom: 3px solid gray;">
+    <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/svg/user.svg" width="25px">
+                </a>
+                <!-- TODO: свързани играчи -->
+                    <ul class="dropdown-menu">
+                        <% if(isAdmin) { %>
+                            <li><a class="dropdown-item" href="/users/admin">Админ</a></li>
+                        <% } %>
+                            <li><a class="dropdown-item" href="/users/profile">Профил</a></li>
+                            <li><a class="dropdown-item" href="/decks">Тестета</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/users/logout">Излез</a></li>
+                        </ul>
+                    </li>
+                    <span class="navbar-text"><%= user.username %></span>
+
+                    <% if(typeof inRoom == 'undefined') {%>
+                    <form class="d-flex" action="/room" method="post">
+                        <button class="btn" type="submit">Добави стая</button>
+                    </form>
+                    <% } %>              
+                </ul>
+                <a class="nav-link active" aria-current="page" href="/search">Търси</a>
+                <a class="nav-link active" aria-current="page" href="/lobby">Лоби</a>
+    </div>
+    </div>
+</nav>

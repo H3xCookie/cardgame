@@ -1,0 +1,12 @@
+#games-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 2%;
+    background-color: rgb(194, 194, 194);
+    border: 5px rgb(146, 146, 146) outset;
+}
+
+.menu-button{
+    margin-top: 20%;
+}

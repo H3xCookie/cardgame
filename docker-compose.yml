@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  cardgame:
+    build: .
+    image: h3xcookie/cardgame
+    ports:
+      - "7777:7777"
+    depends_on:
+      - cardgame-pg
+    environment:
+      - DB_HOST=cardgame-pg
+
+  cardgame-pg:
+    build: ./database/
+    image: h3xcookie/cardgame-pg
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: cardgame

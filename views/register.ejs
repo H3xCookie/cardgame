@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/register-login.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <title>Влизане</title>
+</head>
+<body>
+    <div id="title-box" class="cool-box">
+
+            <% if(typeof errors != 'undefined') { %> <% errors.forEach(error => { %>              
+                <p style="color: rgb(209, 0, 0)"><%= error.message %></p>
+            <% }) %><% } %>
+
+
+        <h1>РЕГИСТРАЦИЯ</h1>
+        
+        <form action="/users/register" method="POST">
+            <div>
+                <input maxlength="30" type="text" name="name" id="name" placeholder="Потребителско име" required>
+            </div>
+        
+            <div>
+                <input maxlength="50" type="email" name="email" id="email" placeholder="Е-поща" required>
+            </div>
+        
+            <div>
+                <input maxlength="100" type="password" name="password" id="password" placeholder="Парола" required>
+            </div>
+        
+            <div>
+                <input maxlength="100" type="password" name="password2" id="password2" placeholder="Потвърждаване на парола" required>
+            </div>
+        
+            <div>
+                <input class="menu-button" type="submit" value="Регистрация"/>
+            </div>
+            <a href="/users/login">Влизане?</a>
+        </form>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+#bookmark{
+    cursor: pointer;
+}
+
+#bookmark:hover{
+    color: gray;
+}

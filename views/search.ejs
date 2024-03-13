@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/search.css">
+    <title>Search</title>
+</head>
+<body>
+    <%- include('templates/navbar') %>
+    <h2>Търсене</h2>
+    <hr class="big-divider">
+
+    <div style="width: 90%; margin: auto;">
+
+    </d>
+    <form action="/search" method="POST">
+        <input type="radio" name="type" value="user" checked>
+        <label for="user">Потребител</label>
+        <input type="radio" name="type" value="deck">
+        <label for="deck">Тесте</label>
+        
+        <input type="text" value="" name="text">
+        <input type="submit" value="Търси">
+
+        <div id="results" class="cool-box" style="margin-top: 10px">
+            <ul>
+            <% if(messages.users) {  %>
+                <h3>Намерени са <%= messages.users.length %> потребилели</h3>    
+            <% messages.users.forEach(usr => {%>
+                <li><a style="text-decoration: none; color: black;" href="/users/profile/<%= usr.id %>"><%= usr.username %></a></li>
+            <% })}else if(messages.decks) { %>
+                <h3>Намерени са <%= messages.decks.length %> тестета</h3>     
+            <% messages.decks.forEach(deck => {%>
+            
+                <li>
+
+
+                    <div class="card-row">
+                        <div class="deck-cards" style="flex-grow: 1">
+                            <div class="mini-game-card black"></div>
+                            <div class="mini-game-card white"></div>
+
+                            <% if (!deck.bookmarked) { %>
+                                <form action="/decks/bookmark-deck/<%= deck.id %>" method="POST">
+                                    <button><%= deck.name %><img id="bookmark" src="/svg/bookmark.svg" width="20"></button> 
+                                </form>
+                            <% }else{ %> 
+                                <form action="/decks/remove-bookmark-deck/<%= deck.id %>" method="POST">
+                                    <button><%= deck.name %><img id="bookmark" src="/svg/bookmark-solid.svg" width="20"></button> 
+                                </form>
+                            <% } %>
+
+
+                            <!-- TODO: Премахни тесте като админ -->
+                        </div>
+                    </div>
+                </li>
+            <% })}%>
+            </ul>
+        </div>
+    </form>
+
+    </div>
+</body>
+</html>

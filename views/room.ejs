@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        var id  = "<%= user.id %>"
+        var room = "<%= roomId %>"
+    </script>
+    <script type="importmap">
+        {
+          "imports": {
+            "socket.io-client": "https://cdn.socket.io/4.7.4/socket.io.esm.min.js"
+          }
+        }
+      </script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/room.css">
+
+    <% if(roomId == 0) { %>
+        <title>NIGGA</title>
+    <% } else if(roomId == -1) { %>
+        <title>Invalid</title>
+    <% } else { %>
+        <title>Стая #<%= roomId %> </title>
+    <% } %>
+</head>
+<body>
+    <%- include('templates/navbar') %>
+
+    <% if(typeof ownr != 'undefined' && ownr == true) { %>
+        <div style="display: flex; flex-direction: row;">
+            <h3>Твоя стая</h3>
+            <form action="/room/remove-room/<%= roomId %>" method="POST">
+                <button class="remove-button">X</button>
+           </form>
+        </div>
+    <% }else { %>
+        <h3>Стая на <%= owner %> </h3>
+    <% } %>
+    <hr class="big-divider">
+
+    <% if(gameState == 'ИЗЧАКВАНЕ') { %>
+    <div class='cool-box' id="player-list">
+        <div id="p-list">
+            <% players.forEach(player => { %>
+                <p id="<%= player.id %>"><%= player.username %></p>
+            <% }) %>
+
+            </div>
+
+
+            <% if(ownr == true) { %>
+                <p id="status"></p>
+
+                <button id="start-btn">Старт</button>
+
+                <div style="display: flex; flex-direction: column;">
+                <% if(typeof decks != 'undefined' && decks.length > 0) { %>
+                        <div class="decks">
+                                <span><b>Всички</b></span>
+                                <input type="checkbox" id="all-cbox" value="false">
+                        </div>
+                    <% decks.forEach(deck => { %>
+                        <div class="decks">
+                                <span><%= deck.name %></span>
+                                <input type="checkbox" class="deck-cbox" id="<%= deck.id %>" value="false">
+                        </div>
+
+                    <% }) %>
+                <% }else if(typeof decks != 'undefined' && decks.length == 0) { %>
+                    <p>Нямаш тестета</p>
+                <% } %>
+                </div>
+            <% }} %>
+    </div>
+
+    <div id="board">
+    </div>
+
+    <div id="hand">
+    </div>
+
+    <div id="chat-box">
+        <button id="toggle" style="cursor: pointer;">Превключване на чат</button>
+        <div id="chat-box-no-button">
+            <div id="chat">
+                <ul id="chat-ul">
+                <br>
+                </ul>
+            </div>
+            <div id="text-box">
+                <input maxlength="100" type="text" name="message" id="input">
+                <button id="send" type="submit">Прати</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/scripts/room.js"></script>
+</body>
+</html>

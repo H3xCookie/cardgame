@@ -1,0 +1,81 @@
+#trash:hover{
+    fill: black;
+    cursor: pointer;
+}
+#deck-box{
+    padding: 2%;
+    border: 10px rgb(146, 146, 146) outset;
+    margin: auto;
+    margin-top: 2%;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+}
+
+#button-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#card-deck-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+
+#popup-card div{
+    display: flex;
+    justify-content: center;
+}
+
+#popup-deck, #popup-card{
+    display: none;
+    top: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#popup-deck{
+    width: 20em;
+}
+
+#card-input{
+    height: 100%;
+    width: 99%;
+    margin: 1%;
+    resize: none;
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+#cards-list{
+    display: flex;
+    flex-direction: column;
+    max-height: 60vh;
+    overflow: auto;
+    width: 100%;
+}
+
+#cards, #decks{
+    flex: 1;
+    text-align: center;
+}
+
+
+.close{
+    border: none;
+    background-color: transparent;
+    width: 10%;
+    right: 0%;
+    position: relative;
+    transition: 0.2s;
+}
+
+.close:hover{
+    transition: 0.2s;
+    transform: scale(1.2)
+}
