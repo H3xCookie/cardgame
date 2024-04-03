@@ -39,7 +39,9 @@
 }
 
 #popup-deck{
-    width: 20em;
+    width: 32em;
+    top: 2%;
+    height: 37em;
 }
 
 #card-input{

@@ -51,10 +51,7 @@
 
             </div>
 
-
             <% if(ownr == true) { %>
-                <p id="status"></p>
-
                 <button id="start-btn">Старт</button>
 
                 <div style="display: flex; flex-direction: column;">
@@ -68,7 +65,6 @@
                                 <span><%= deck.name %></span>
                                 <input type="checkbox" class="deck-cbox" id="<%= deck.id %>" value="false">
                         </div>
-
                     <% }) %>
                 <% }else if(typeof decks != 'undefined' && decks.length == 0) { %>
                     <p>Нямаш тестета</p>
@@ -77,7 +73,9 @@
             <% }} %>
     </div>
 
-    <div id="board">
+    <div id="upper-board">
+        <div id="board">
+        </div>
     </div>
 
     <div id="hand">

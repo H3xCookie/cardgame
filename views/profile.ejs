@@ -28,12 +28,12 @@
         <hr class="big-divider">
     </div>
 
-    <div id="profile-box"class="cool-box">
+    <div id="profile-box"class="cool-box" style="flex-direction: row; justify-content: space-around;">
         <% if(typeof profileUser != 'undefined') { %>
             <% if(typeof areFriends != 'undefined') { %>
                 <% if(areFriends == 'none') { %>
                     <form action="/users/profile/<%= profileUserId %>/send-request" method="POST">
-                        <button style="width: 10%; margin-left: 12%" type="submit">Добави</button>
+                        <button style="width: 100%; margin-left: 12%" type="submit">Добави</button>
                     </form>
                 <%}else if(areFriends == 'pending') { %>
                     <span>Заявката е изпратена</span>
@@ -49,13 +49,14 @@
                     <li><a style="text-decoration: none; color: black" href="/users/profile/<%= friend.id %>"><%= friend.name %></a></li>
             <% }) %>
             <% } else { %>
-                <span><%= typeof profileUser != 'undefined' ? profileUser : user.username %> е самотник</span> 
+                <span><%= typeof profileUser != 'undefined' ? profileUser : user.username %> няма приятели</span> 
             <% } %>
 
 
-            <% if(typeof requests != 'undefined' && requests.length > 0 && typeof profileUser == 'undefined') { requests.forEach(request => { %>
+            <% if(typeof requests != 'undefined' && requests.length > 0 && typeof profileUser == 'undefined') { %>
                 <hr class="medium-divider">
                 <h3>Заявки</h3>
+                <% requests.forEach(request => { %>
                 <div id="requests-row" style="display: flex; justify-content: space-between;">
                     <li><a style="text-decoration: none; color: black" href="/users/profile/<%= request.id %>"><%= request.name %></a></li>
                     <form action="/users/profile/<%= request.id %>/accept-request" method="POST">
@@ -68,6 +69,38 @@
             <% })} %>
                 </ul>
             </div>
+        </div>
+
+        <div class="sub-box" style="padding: 1%; padding-left: 0; width: 60%; flex-direction: row;">
+            <% if(decks.length > 0) { %>
+                    <% decks.forEach(deck => { %> 
+                        <div class="card-row" style="padding: 2px; width: 100%; justify-content: space-between; margin: auto; margin-left: 2%; margin-right: 2%;">
+                        <div class="deck-cards">
+                            <div class="mini-game-card gray"></div>
+                            <span><%= deck.name %></span>
+                        </div>
+
+
+                        <% if (!deck.bookmarked && !deck.own) { %>
+                                <form action="/decks/bookmark-deck/<%= deck.id %>" method="POST">
+                                    <button><img id="bookmark" src="/svg/bookmark.svg" width="20"></button> 
+                                </form>
+                            <% }else if(!deck.own){ %> 
+                                <form action="/decks/remove-bookmark-deck/<%= deck.id %>" method="POST">
+                                    <button><img id="bookmark" src="/svg/bookmark-solid.svg" width="20"></button> 
+                                </form>
+                            <% } %>
+
+
+                            <% if(isAdmin) { %>
+                                <form action="/decks/remove-deck/<%= deck.id %>" method="POST">
+                                    <button>X</button>
+                                </form>
+                            <% } %>
+                    <% }) %>
+            <% }else{ %>
+                <h2 style="margin: auto">Няма тестета</h2>
+            <% } %>
         </div>
     </div>
 </body>

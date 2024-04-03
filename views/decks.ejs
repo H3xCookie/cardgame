@@ -39,8 +39,6 @@
                             <span><%= deck.name %></span>
                         </div>
 
-
-
                         <form action="/decks/remove-deck/<%= deck.id %>" method="POST">
                             <button>
                                 <img id="trash" src="/svg/trash.svg" width="20px">
@@ -80,7 +78,8 @@
             <div id="cards">
                 <h2>ТВОИТЕ КАРТИ (<%= cards.length %>)</h2>
                 <div id="cards-list">
-                    <% if(typeof cards != 'undefined' && cards.length > 0 ) { %>  <% cards.forEach(card => { %>
+                    <% if(typeof cards != 'undefined' && cards.length > 0 ) { %>  
+                        <% cards.forEach(card => { %>
                         <div class="card-row">
                             <div style="display: flex; flex-direction: row; flex-grow: 1">
                                 <% if( card.black ) { %>
@@ -133,7 +132,8 @@
                     <h3>Нямаш карти</h3>
                 <% } %>
             </div>
-
+                <span><b>Всички</b></span>
+                <input type="checkbox" name="allbox" id="all-cbox">
                 <input  maxlength="30" style="margin: 5%;"placeholder="Име на тесте" type="text" name="name" required>
                 <button type="submit" class="add-button" >Добави тесте</button>
             </form>

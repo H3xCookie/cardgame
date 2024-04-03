@@ -1,6 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 import pool from '../dbConfig'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { PassportStatic } from 'passport'
 
 function initialize(passport: PassportStatic){

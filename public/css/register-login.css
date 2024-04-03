@@ -1,8 +1,12 @@
+#wrapper{
+    display: flex;
+    justify-content: center;
+    margin-top: 10%;
+}
+
 #title-box{
     position: absolute;
     text-align: center;
-    top: 20%;
-    left: 40%;
     margin: -25px 0 0 -25px; 
     width: 15em;
     height: 22em;
@@ -12,13 +16,19 @@
     font-size: 200%;
 }
 
+
+#title-box input:not(.menu-button){
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 2px solid black;
+    margin-top: 10px;
+}
+
 #title-box button{
     position: relative;
     margin: auto;
-}
-
-#title-box input{
-    border: none;
+    margin-top: 10px;
 }
 
 .menu-button{
@@ -29,5 +39,5 @@
 
 .menu-button:hover{
     font-weight: bold;
-    font-size: 160%;
+    font-size: 140%;
 }

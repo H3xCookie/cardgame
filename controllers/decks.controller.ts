@@ -86,14 +86,12 @@ const bookmarkDeck = (req: any, res: Response) => {
         SET p_bookmarked_decks_id = p_bookmarked_decks_id || ARRAY[$1]
         WHERE p_id = $2
     `, [dId, pId])
-    console.log('le updated player')
 
     pool.query(`
         UPDATE deck
         SET d_bookmarked_player = d_bookmarked_player || ARRAY[$1]
         WHERE d_id = $2
     `, [pId, dId])
-    console.log('le updated deck')
 
     res.redirect('back')
 }
@@ -117,9 +115,6 @@ const removeBookmarkedDeck = async (req: any, res: Response) => {
     res.redirect('back')
 }
 
-
-
-
 async function getCardTextsByUserId(id: number) {
     const query = await pool.query(`SELECT * FROM card WHERE c_owner_id = $1`, [id])
 	let cards: { id:string, text: string, black: boolean }[] = []
@@ -132,9 +127,9 @@ async function getCardTextsByUserId(id: number) {
 
 async function getDecksByUserId(id: number) {
     const query = await pool.query(`SELECT * FROM deck WHERE d_owner_id = $1`, [id])
-	let decks: { id:string, name: string, cards: string[]}[] = []
+	let decks: { id:string, name: string, cards: string[], bookmarked: any[], owner: any[]}[] = []
     for(const deck of query.rows){
-            decks.push({id:deck.d_id, name: deck.d_name, cards: deck.d_cards_id})
+        decks.push({id:deck.d_id, name: deck.d_name, cards: deck.d_cards_id, bookmarked: deck.d_bookmarked_player, owner: deck.d_owner_id})
     }
 
     return decks;

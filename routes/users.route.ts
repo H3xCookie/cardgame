@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {checkNotAuthenticated, checkAuthenticated} from '../controllers/auth.controller';
-import { login, register, logout, profile, admin, postlogin, postregister, profileId, sendFriendRequest, acceptFriendRequest } from "../controllers/users.controller"
+import { login, register, logout, profile, postlogin, postregister, profileId, sendFriendRequest, acceptFriendRequest } from "../controllers/users.controller"
 
 const usersRouter = Router()
 
@@ -13,7 +13,6 @@ usersRouter.get("/login", checkAuthenticated, login);
 usersRouter.get("/register", checkAuthenticated, register);
 usersRouter.get("/profile", checkNotAuthenticated, profile);
 usersRouter.get("/profile/:id", checkNotAuthenticated, profileId);
-usersRouter.get("/admin", checkNotAuthenticated, admin);
 usersRouter.get("/logout", checkNotAuthenticated, logout);
 
 export default usersRouter;

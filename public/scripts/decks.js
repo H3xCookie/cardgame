@@ -11,6 +11,8 @@ const deckWrapper = document.querySelector("#deck-wrapper")
 const addDeck = document.querySelector("#add-deck")
 const deckPopup = document.querySelector("#popup-deck")
 const closeDeck = document.querySelector("#close-deck")
+const allBox = document.querySelector('#all-cbox')
+const cardBoxes = document.querySelectorAll(".checkbox-cards")
 
 const black = document.querySelector("#black")
 black.value = 'off'
@@ -52,4 +54,10 @@ closeCard.onclick = () => {
 closeDeck.onclick = () => {
     deckWrapper.style.display = 'none'
     blur.style.filter = 'blur(0px)'
+}
+
+allBox.onchange = () => {
+    for(const box of cardBoxes){
+        box.checked = !box.checked
+    }
 }

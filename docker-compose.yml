@@ -8,7 +8,12 @@ services:
     depends_on:
       - cardgame-pg
     environment:
+      - DB_USER=user
+      - DB_PASSWORD=1234
+      - DB_PORT=5432
+      - DB_DATABASE=cardgame
       - DB_HOST=cardgame-pg
+      - SESSION_SECRET=secret
 
   cardgame-pg:
     build: ./database/

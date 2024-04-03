@@ -23,47 +23,51 @@
         <input type="radio" name="type" value="deck">
         <label for="deck">Тесте</label>
         
-        <input type="text" value="" name="text">
-        <input type="submit" value="Търси">
+            <input type="text" value="" name="text">
+            <input type="submit" value="Търси">
+        </form>
 
         <div id="results" class="cool-box" style="margin-top: 10px">
-            <ul>
             <% if(messages.users) {  %>
+                <ul>
                 <h3>Намерени са <%= messages.users.length %> потребилели</h3>    
             <% messages.users.forEach(usr => {%>
                 <li><a style="text-decoration: none; color: black;" href="/users/profile/<%= usr.id %>"><%= usr.username %></a></li>
-            <% })}else if(messages.decks) { %>
+            <% }) %>
+                </ul>
+             <% }else if(messages.decks) { %>
                 <h3>Намерени са <%= messages.decks.length %> тестета</h3>     
             <% messages.decks.forEach(deck => {%>
-            
-                <li>
+                    <div class="card-row" style="margin-top: 1%">
+                        <div class="deck-cards" style="width: 100%; justify-content: space-between; margin: 1%" >
+                            <div style="display: flex; flex-direction: row;">
+                                <div class="mini-game-card" style="background-color: lightgray; margin-left: 2%;"></div>
+                                <span><%= deck.name %></span>
+                            </div>
 
-
-                    <div class="card-row">
-                        <div class="deck-cards" style="flex-grow: 1">
-                            <div class="mini-game-card black"></div>
-                            <div class="mini-game-card white"></div>
-
+                            <div style="display: flex; flex-direction: row;">
                             <% if (!deck.bookmarked) { %>
                                 <form action="/decks/bookmark-deck/<%= deck.id %>" method="POST">
-                                    <button><%= deck.name %><img id="bookmark" src="/svg/bookmark.svg" width="20"></button> 
+                                    <button><img id="bookmark" src="/svg/bookmark.svg" width="20"></button> 
                                 </form>
                             <% }else{ %> 
                                 <form action="/decks/remove-bookmark-deck/<%= deck.id %>" method="POST">
-                                    <button><%= deck.name %><img id="bookmark" src="/svg/bookmark-solid.svg" width="20"></button> 
+                                    <button><img id="bookmark" src="/svg/bookmark-solid.svg" width="20"></button> 
                                 </form>
                             <% } %>
 
 
-                            <!-- TODO: Премахни тесте като админ -->
-                        </div>
+                            <% if(isAdmin) { %>
+                                <form action="/decks/remove-deck/<%= deck.id %>" method="POST">
+                                    <button>X</button>
+                                </form>
+                            <% } %>
+ 
+                            </div>
+                       </div>
                     </div>
-                </li>
             <% })}%>
-            </ul>
         </div>
-    </form>
-
     </div>
 </body>
 </html>

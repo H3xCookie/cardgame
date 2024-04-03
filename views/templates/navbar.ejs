@@ -9,7 +9,6 @@
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="/svg/user.svg" width="25px">
                 </a>
-                <!-- TODO: свързани играчи -->
                     <ul class="dropdown-menu">
                         <% if(isAdmin) { %>
                             <li><a class="dropdown-item" href="/users/admin">Админ</a></li>
@@ -21,14 +20,16 @@
                         </ul>
                     </li>
                     <span class="navbar-text"><%= user.username %></span>
-
+                <div class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/search">Търси</a>
+                </div>
                     <% if(typeof inRoom == 'undefined') {%>
                     <form class="d-flex" action="/room" method="post">
                         <button class="btn" type="submit">Добави стая</button>
                     </form>
                     <% } %>              
                 </ul>
-                <a class="nav-link active" aria-current="page" href="/search">Търси</a>
+
                 <a class="nav-link active" aria-current="page" href="/lobby">Лоби</a>
     </div>
     </div>

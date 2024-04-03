@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import passport from 'passport';
 import pool from '../dbConfig';
 import { getUsernameById, makeid } from './std.controller'
+import { getDecksByUserId } from './decks.controller';
 
 const login = (req: Request, res: Response) => {
     res.render("login");
@@ -22,8 +23,20 @@ const logout = (req: Request, res: Response) => {
 const profile = async (req: any, res: Response) =>{
 	let admin = req.user.admin_acc;
 	const profileUserFriends: any = await getFriendsByUserId(req.user.p_id)
+	const profileUserDecks: any = await getDecksByUserId(req.user.p_id)
+
+	for(const deck of profileUserDecks){
+		if(deck.bookmarked != null && deck.bookmarked.includes(req.user.p_id)){
+			if(deck.owner == req.user.p_id){
+				deck.own = true
+			}
+			deck.bookmarked = true	
+		}
+	}
+
 	let friends: any[] = []
 	let requests: any[] = []
+
 	for(const friend of profileUserFriends){
 		const id = Object.keys(friend).toString()
 		const username = await getUsernameById(id)
@@ -34,7 +47,7 @@ const profile = async (req: any, res: Response) =>{
 		}
 		friends.push(frObj)
 	}
-	res.render('profile', { user: { username: admin ? "Админ " + req.user.p_username : req.user.p_username, id: req.user.p_id}, isAdmin: admin, friends, requests });
+	res.render('profile', { user: { username: admin ? "Админ " + req.user.p_username : req.user.p_username, id: req.user.p_id}, isAdmin: admin, friends, requests, decks: profileUserDecks });
 }
 
 const profileId = async (req: any, res: Response) => {
@@ -46,6 +59,16 @@ const profileId = async (req: any, res: Response) => {
 
 	let admin = isAdmin(req)
 	const profileUsername: any = await getUsernameById(id)
+	const profileUserDecks: any = await getDecksByUserId(id)
+
+	for(const deck of profileUserDecks){
+		if(deck.bookmarked != null && deck.bookmarked.includes(req.user.p_id)){
+			if(deck.owner == req.user.p_id){
+				deck.own = true
+			}
+			deck.bookmarked = true	
+		}
+	}
 
 	if(!profileUsername){
 		res.redirect('back')
@@ -70,7 +93,8 @@ const profileId = async (req: any, res: Response) => {
 			friends,
 			areFriends,
 			profileUserId: id,
-			requests: []
+			requests: [],
+			decks: profileUserDecks
 		})
 	}
 }
@@ -157,15 +181,6 @@ const removeFriend = (req: any, res: Response) => {
 
 }
 
-const admin = (req: any, res: Response) =>{
-	let admin = isAdmin(req)
-	if(admin){
-		res.render('admin', { user: admin ? "Админ " + req.user.p_username : req.user.p_username, isAdmin: admin });
-	}else{
-		res.redirect('lobby');
-	}
-}
-
 const postlogin = passport.authenticate('local', {
 	successRedirect: "/lobby",
     failureRedirect: "/users/login",
@@ -189,15 +204,18 @@ const postregister = async (req: Request, res: Response) => {
 	if(errors.length > 0){
 		res.render('register', {errors})
 	}else{
-		let hashedPassword = await bcrypt.hash(password, 10);
-		let id = makeid(6)
+
+		const salt = bcrypt.genSaltSync(10)
+		const hashedPassword = bcrypt.hashSync(password, salt);
+		const id = makeid(6)
+
 		const emailQuery: any = await pool.query(
 			`SELECT * FROM player
 			WHERE p_email = $1`, [email])
-			
+	
 		const usernameQuery: any = await pool.query(
-				`SELECT * FROM player
-				WHERE p_username = $1`, [name])
+			`SELECT * FROM player
+			WHERE p_username = $1`, [name])
 		
 
 			if(emailQuery.rows.length > 0){
@@ -207,8 +225,8 @@ const postregister = async (req: Request, res: Response) => {
 				errors.push({message: "Потребителското име вече е заето"})
 				res.render('register', {errors})
 			}else if(name.length > 30 || email.length > 50 || name.length == 0 || email.length == 0){
-					errors.push({message: "Невалидни данни"})
-					res.render('register', {errors})
+				errors.push({message: "Невалидни данни"})
+				res.render('register', {errors})
 			}else{
 					pool.query(
 						`INSERT INTO player (p_id, p_username, p_email, p_pwd)
@@ -229,4 +247,4 @@ function isAdmin(req: any){
 	return req.user.admin_acc; 
 }
 
-export {login, register, logout, profile, profileId, postlogin, postregister, admin, sendFriendRequest, acceptFriendRequest};
+export {login, register, logout, profile, profileId, postlogin, postregister, sendFriendRequest, acceptFriendRequest};

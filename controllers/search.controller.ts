@@ -29,11 +29,6 @@ const postSearch = async (req: any, res: Response) => {
 
     if(results.length > 0) {
         results.forEach((deck: any) => {
-            console.log(`REQ USER PID = ${req.user.p_id}`)
-            console.log(`deck owner iD = ${deck.owner}`)
-
-            console.log(`req == deck? ${req.user.p_id == deck.owner}`)
-
             if(deck.owner != req.user.p_id){
                 if(deck.bookmarked != null && deck.bookmarked.includes(req.user.p_id)){
                     deck.bookmarked = true;
@@ -85,8 +80,6 @@ const searchDeckByName = async(name: string) => {
 
     if(query.rows.length > 0){
         for(let result of query.rows){
-        console.log('\n\nRESULT\n\n')
-            console.log(result)
             results.push({name: result.d_name, id: result.d_id, bookmarked: result.d_bookmarked_player, owner: result.d_owner_id})
         }
     }

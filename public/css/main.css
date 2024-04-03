@@ -1,4 +1,4 @@
-@font-face{
+/* @font-face{
     font-family: "NeverMindDisplay";
     src:url('../../fonts/nevermind_display/NeverMindDisplay/NeverMind\ Display/ttf/NeverMindDisplay-Regular.ttf')
 }
@@ -9,12 +9,19 @@
     font-weight: bold;
 }
 
+@font-face{
+    font-family: "RomanCyrillic";
+    src: url('../../fonts/font/RomanCyrillic_Std.ttf') ;
+    font-weight: bold;
+} */
+
 body{
     background-color: rgb(179, 179, 179);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    font-family: "NeverMindDisplay";
+    /* font-family: "NeverMindDisplay"; */
+    /* font-family: 'RomanCyrillic' */
 }
 h1, h2, h3{
     font-weight: bold;
@@ -172,7 +179,7 @@ ul{
 }
 
 .deck-cards .white{
-    transform: translate(-50px, 7px);
+    transform: translate(-40px, 7px);
 }
 
 .card-row{
@@ -184,6 +191,7 @@ ul{
 .card-row span{
     max-width: 50%;
     font-size: .9em;
+    margin-bottom: 10%;
 }
 
 .card-row button{
@@ -192,6 +200,10 @@ ul{
     margin-left: -70%;
 }
 
+.card-row:hover{
+    background-color: rgb(192, 192, 192);
+    transition: .1s;
+}
 
 #deck-cards-rows{
     max-height: 60vh;
@@ -201,4 +213,8 @@ ul{
 
 #deck-cards-rows input{
     margin-right: 10%;
+}
+ 
+#gray{
+    background-color: lightgray;
 }

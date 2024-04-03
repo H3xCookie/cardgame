@@ -8,14 +8,15 @@ const removeButton = document.querySelector('.remove-button')
 const playerList = document.getElementById('player-list')
 const startBtn = document.querySelector('#start-btn')
 const pList = document.querySelector('#p-list')
-const status = document.querySelector('#status')
 const board = document.querySelector('#board')
+const upperBoard = document.querySelector('#upper-board')
 const deckBoxes = document.querySelectorAll('.deck-cbox')
 const allBox = document.querySelector('#all-cbox')
 const hand = document.querySelector('#hand')
 const roomSocket = io()
 
 var hiddenChat = false
+var score = 0
 
 roomSocket.emit('join-room', room)
 
@@ -33,8 +34,6 @@ roomSocket.on('start-game', (king, nextRound) => {
 
 roomSocket.on('draw-card', (cards, show = true) => {
     cards.forEach(card => {
-    console.log('DRAWING: ')
-    console.log(card)
         hand.innerHTML +=`
             <div class="game-card small playable" id="${card.id}">
                 <span>${card.text}</span>
@@ -62,13 +61,14 @@ roomSocket.on('reveal', (cards, king) => {
 })
 
 roomSocket.on('reveal-selected', (winnerCardId, winnerName) => {
-    console.log('le revealing winner')
     const winnerText = `Победител: ${winnerName}`
     const winnerP = document.createElement('p')
+    winnerP.id = 'winner'
+    winnerP.id = 'winner'
     winnerP.innerText = winnerText
 
-    board.insertBefore(winnerP, board.firstChild)
-    console.log(`board.firstChild = ${board.firstChild}`)
+    upperBoard.insertBefore(winnerP, upperBoard.firstChild)
+    hideKing()
 
     hideWhiteWithoutWinner(winnerCardId)
 })
@@ -79,7 +79,6 @@ roomSocket.on('update-room', (joining, user) => {
     }else{
         document.getElementById(`${user.id}`).remove()
     }
-    joining ? console.log(`${user.username} joining`) : console.log(`${user.username} leaving`)
 })
 
 roomSocket.on('redirect', () => {
@@ -88,6 +87,11 @@ roomSocket.on('redirect', () => {
 
 roomSocket.on('receive-card', (card) => {
     displayCard(card.text, card.id)
+})
+
+roomSocket.on('inc-points', () => {
+    score++
+    document.querySelector('#points').innerText = `Твоите точки: ${score}`
 })
 
 if(removeButton){
@@ -99,7 +103,6 @@ if(removeButton){
     const decks = []
     for(let i = 0 ; i < deckBoxes.length; i++){
         const box = deckBoxes[i]
-        console.log(box)
         if(box.checked){
             decks.push(box.id)
         }
@@ -136,11 +139,12 @@ toggleBtn.onclick = () => {
     }
 }
 
+if(!!allBox){
 allBox.onchange = () => {
     for(const box of deckBoxes){
         box.checked = !box.checked
     }
-}
+}}
 
 textInput.addEventListener('keypress', (e) => {
     if(e.key == 'Enter'){
@@ -156,9 +160,6 @@ textInput.addEventListener('keypress', (e) => {
     }
 })
 
-
-
-
 function displayMessage(text, info, own = false){
     const el = document.createElement('li');
     if(own){
@@ -166,7 +167,7 @@ function displayMessage(text, info, own = false){
     }else if(info){
         el.style.fontStyle = "italic";
     }
-    el.innerHTML = own ? `You: ${text}<hr style="margin: 0px auto">` : `${text}<hr style="margin: 0px auto">`;
+    el.innerHTML = own ? `Ти: ${text}<hr style="margin: 0px auto">` : `${text}<hr style="margin: 0px auto">`;
     document.querySelector('#chat-ul').appendChild(el)
 }
 
@@ -195,17 +196,25 @@ function selectCard(pId){
             alert(response.status)
         }else{
             const nextBtn = document.createElement('button')
+            nextBtn.id = 'next'
             nextBtn.innerHTML = "Продължи"
             nextBtn.onclick = () => {
                 roomSocket.emit('next-round', (response) =>{
                     hideKing()
+                    hideEl(document.querySelector('#next'))
                     if(id == response.status){
                         showKing()
                         hideEl(hand)
+                        hideEl(document.querySelector('#next'))
                     }
                 })
             }
-            board.appendChild(nextBtn)
+            upperBoard.appendChild(nextBtn)
+            const cards = document.querySelectorAll('.selectable')
+            
+            cards.forEach(card => {
+                card.classList.remove('selectable')
+            })
         }
     })
 }
@@ -222,7 +231,6 @@ function hideWhiteWithoutWinner(id){
     })
 }
 
-
 function startGame(king, firstRound){
     hideEl(playerList)
     const playableCards = document.querySelectorAll('.playable')
@@ -234,10 +242,17 @@ function startGame(king, firstRound){
     }}
     
     if(!firstRound) {
+        points.innerText = `Твоите точки: ${score}`
         clearBoard()
+        hideEl(document.querySelector('#winner'))
         showElFlex(hand)
+    }else{
+        const points = document.createElement('p')
+        points.id = 'points'
+        points.innerText = `Твоите точки: ${score}`
+        upperBoard.insertBefore(points, upperBoard.firstChild)
     }
-         
+
     if(king){
         showKing()
         hideEl(hand)
@@ -246,18 +261,14 @@ function startGame(king, firstRound){
     }
 }
 
-roomSocket.on('test', () => {
-    console.log('test')
-})
-
 function clearBoard(){ board.innerHTML = '' }
 function hideEl(el){ el.style.display = 'none' }
 function showElFlex(el){ el.style.display = 'flex' }
 function showKing(){
-    const tsarText = document.createElement('h2')
+    const tsarText = document.createElement('h3')
     tsarText.id = 'tsar-text'
     tsarText.innerHTML = 'Ти си Царя' 
-    board.insertBefore(tsarText, board.firstChild)
+    upperBoard.insertBefore(tsarText, upperBoard.firstChild)
 }
 function hideKing() {
     if(document.getElementById("tsar-text")){

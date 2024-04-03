@@ -12,20 +12,9 @@ const room = async (req: any, res: Response) => {
             const username = await getUsername(query.rows[0])
             let decks = await getDecksByUserId(query.rows[0].r_owner_id)
             const bookmarkedDecks: any = await getBookmarkedDecksByUserId(query.rows[0].r_owner_id)
-
-            console.log('LOEADINGF ROM')
-            console.log('DSEG: ')
-            console.log(decks)
-
-            console.log('\nboogmarkds')
-            console.log(bookmarkedDecks)
-
-            bookmarkedDecks.forEach((deck: { id: string; name: string; cards: string[]; }) => {
+            bookmarkedDecks.forEach((deck: any) => {
                 decks.push(deck)
             })
-
-            console.log('\n\nfinal:')
-            console.log(decks)
 
             const players = await getPlayersByRoomId(roomId)
             const gameState = await query.rows[0].r_state
@@ -61,8 +50,6 @@ const removeRoom = async (req: any, res: Response) => {
             res.redirect(`/lobby`)
         }
 }
-
-
 
 async function getUsername(roomQuery: any){
     const query: any = await pool.query(`SELECT * FROM player WHERE p_id = $1`, [roomQuery.r_owner_id]);

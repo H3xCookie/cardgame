@@ -24,7 +24,6 @@ const roomUsers = new Map<string, string[]>();   // room -id[] :)
 
 
 const roomsInfo: { id: any; whiteCards: { id: string; text: string }[]; blackCards: { id: string; text: string }[]; queriedCards: any[]; points: { [x: string]: number }[]; king: string }[] = []
-
 const roomsInfoMap = new Map(roomsInfo.map(room => [room.id, room]))
 
 initializePassport(passport)
@@ -33,7 +32,6 @@ app.set('view engine', "ejs");
 app.use(express.urlencoded({ extended: false }))
 
 app.use(sessionMiddleware);
-
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -47,7 +45,7 @@ const io = new Server(httpServer, {
     cors: {
 		origin: `*`,
 		methods: ["GET", "POST"]
-		}
+	}
 })
 
 io.engine.use(sessionMiddleware)
@@ -63,7 +61,6 @@ io.on('connection', (socket) => {
 		return;	
 	}
 	const id = req.user.id
-
 	let info = false
 
 	socket.on('send-message', (room: any, message: any ) => {
@@ -85,8 +82,6 @@ io.on('connection', (socket) => {
 
 		if(roomUsers.has(room)){
 			let rooms = roomUsers.get(room)!
-			console.log('rooms:')
-			console.log(rooms)
 			rooms.push(id)
 			roomUsers.set(room, rooms)
 		}else{
@@ -96,6 +91,7 @@ io.on('connection', (socket) => {
 		socket.to(room).emit('receive-message', username, info, message)
 		socket.to(room).emit('update-room', true, req.user)
 	})
+
 	socket.on('disconnect', async () => {
 		const room: any = userRooms.get(id)
 		if(room){
@@ -115,37 +111,26 @@ io.on('connection', (socket) => {
 		// TODO: flash gam has bin delet
 	})
 
-
-
 	socket.on('try-start-game', async (decks, room, callback: Function) => {
-		// IF LESS THAN 3 PLAYERS
 		const players = roomUsers.get(room)!
 		if(players.length < 3){
 			callback ({
 				status: 'Минимален брой играчи: 3'
 			})
-		// IF NO DECKS ARE SELECTED
 		}else if(decks.length == 0){
 				callback({
 					status: 'Няма избрани тестета'
 				})
 
-		// CHECK DECKS
 		}else{
-			// --- DRAW CARDS ---
 			const minWhiteCards = players.length * 8
 			let whiteCards: {id: string, text: string}[] = [];
 			let blackCards: {id: string, text: string}[] = [];
 			let currentWhiteCards = 0;
 			let hasBlackCard = false
 
-			console.log('le statring game with decks: ')
-			console.log(decks)
 
 			for(const deck of decks){
-				console.log('\n\niterating ')
-				console.log(deck)
-
 				const cardsQuery = await pool.query(`
 					SELECT d_cards_id
 					FROM deck
@@ -168,24 +153,19 @@ io.on('connection', (socket) => {
 							currentWhiteCards++
 							whiteCards.push({id: card, text: info.rows[0].c_text})
 						}
-					}else{
-						console.log(`${card} is invalid`)
 					}
 				}
 			}
 
 			if(!hasBlackCard){
-				// DECK HAS NO BLAGG
 				callback ({
 					status: 'Няма черни карти'
 				})
 			}else if(currentWhiteCards < minWhiteCards){
-				// NO MINIMUM WHITE CARDS
 				callback ({
 					status: `Минимален борй бели карти: ${minWhiteCards}, Брой бели карти в избраните тестета: ${currentWhiteCards}`
 				})
 			}else{
-				// START GAME
 				let king = random(players)
 				let currentBlack = random(blackCards)
 				let ctr = 0;
@@ -225,8 +205,6 @@ io.on('connection', (socket) => {
 					king: king
 				})
 				
-				// players draw new card
-
 				io.to(room).emit('start-game', king, true)
 
 				callback ({
@@ -254,7 +232,6 @@ io.on('connection', (socket) => {
 			io.to(id).emit('draw-card', [randCard], false)
 
 			if(last == true){
-				console.log(`REVEALING TO KING: ${roomsInfoMap.get(room)!.king}`)
 				io.to(room).emit('reveal', getQueriedCards(room), roomsInfoMap.get(room)!.king) 
 			}
 
@@ -282,20 +259,16 @@ io.on('connection', (socket) => {
 			})
 		}else{
 			roomsInfoMap.get(room)?.points.forEach(currentId => {
-				console.log(`\n\nITERATING`)
 				if(Object.keys(currentId) == winnerQuery.rows[0].p_id){
 					currentId[`${Object.keys(currentId)}`]++
 				}
-				console.log(`\n\n`)
 			})
 
 			console.log('\n\nPOINTS: ')
 			console.log(roomsInfoMap.get(room)!.points)
 
-
-
-			io.to(room).emit('update-points', roomsInfoMap.get(room)!.points)
-			
+			io.to(pId).emit('inc-points')
+			io.to(room).emit('update-points', roomsInfoMap.get(room)!.points)	
 			io.to(room).emit('reveal-selected', pId, winnerQuery.rows[0].p_username)
 			callback({
 				status: 'ok'	
@@ -316,9 +289,6 @@ io.on('connection', (socket) => {
 
 		clearQuery(room)
 		roomsInfoMap.get(room)!.king = king
-
-		console.log(`NEXT KING: `)
-		console.log(king)
 
 		io.to(room).emit('start-game', king, false)
 		io.to(room).emit('receive-card', currentBlack)
@@ -353,7 +323,6 @@ io.on('connection', (socket) => {
 	}
 
 	function queryCard(pId: string, rId: string, card: {id: string, text: string}){
-		console.log(`${pId} quering ${card.text}`)
 		let last = false
 		roomsInfoMap.get(rId)!.queriedCards.push({card: card, pId: pId})
 		if(roomsInfoMap.get(rId)!.queriedCards.length == roomUsers.get(rId)!.length - 1){
@@ -383,7 +352,7 @@ function random(array: any[]){
 
 
 httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`Le server runnning on port ${PORT}`);
+  console.log(`Server runnning on port ${PORT}`);
 });
 
 export { io };
