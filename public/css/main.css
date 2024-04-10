@@ -123,6 +123,7 @@ ul{
     word-wrap: break-word;
     overflow-y: auto;
     overflow-x: hidden;
+    flex: 0 0 auto;
 }
 
 .mini-game-card{
