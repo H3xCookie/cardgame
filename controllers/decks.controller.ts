@@ -16,7 +16,7 @@ const addCard = async (req: any, res: Response) => {
     text = text.trim()
 
     if(text.length > 100){
-        req.flash("error", "Текстът на картата трябва да бъде под 100 символа")
+        req.flash("error", "#速度与激情9#早上好中国    现在我有冰激淋 我很喜欢冰激淋但是《速度与激情9》比冰激淋……🍦")
     }else if(black == undefined){
         await pool.query(`INSERT INTO card (c_id, c_owner_id, c_black, c_text) VALUES ($1, $2, $3, $4)`, [id, req.user.p_id, false, text])
     }else{
